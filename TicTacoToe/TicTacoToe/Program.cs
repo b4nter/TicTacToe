@@ -10,16 +10,12 @@ namespace TicTacoToe
     {
         static void Main(string[] args)
         {
-            string x = "x";
-            Console.WriteLine("    1   2   3");
-            Console.WriteLine("  |---|---|---|");
-            Console.WriteLine("1 | " + x + " | " + x + " | "+ x + " |");
-            Console.WriteLine("  |---|---|---|");
-            Console.WriteLine("2 | " + x + " | " + x + " | " + x + " |");
-            Console.WriteLine("  |---|---|---|");
-            Console.WriteLine("3 | " + x + " | " + x + " | " + x + " |");
-            Console.WriteLine("  |---|---|---|");
 
+            Game game = new Game();
+
+            game.Print();
+            game.FirstLine[1] = "x";
+            game.Print();
             Console.ReadLine();
         }
     }
