@@ -8,14 +8,13 @@ namespace TicTacoToe
 {
     class Game
     {
-        // private string[] First { get; set; } => {" "," ", " ", }
-        //  private string[] FirstLine 
-        private string[] firstLine = { " ", " ", " " };
-        private string[] secondLine = { " ", " ", " " };
+      
+        
+        
+        public string[] FirstLine { get; set; } = { "x", " ", " " };
+        public string[] SecondLine { get; set; } = { " ", " ", " " };
+        // below can be written shorter to the same as above, do not need to add variable
         private string[] thirdLine = { " ", " ", " " };
-
-        public string[] FirstLine{ get => firstLine; set => firstLine = value; }
-        public string[] SecondLine { get => secondLine; set => secondLine = value; }
         public string[] ThirdLine { get => thirdLine; set => thirdLine = value; }
 
         public void Print()
