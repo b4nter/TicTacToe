@@ -12,10 +12,16 @@ namespace TicTacoToe
         {
 
             Game game = new Game();
+            WinRules gw = new WinRules(game);
+            // Console.WriteLine(gw.IsWinner("x"));
 
+            game.StartGame();
+            /*game.Print();
+            game.PlayerMove(1, 2, "x");
             game.Print();
-            game.FirstLine[1] = "x";
-            game.Print();
+            game.PlayerMove(2, 2, "x");
+            game.Print();*/
+           // game.Print();
             Console.ReadLine();
         }
     }
