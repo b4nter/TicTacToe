@@ -5,6 +5,30 @@
         private Game game;
         public WinRules(Game game) { this.game = game; }
 
+
+        public bool Draw()
+        {
+            if (LineFull(game.FirstLine) && LineFull(game.SecondLine) && LineFull(game.ThirdLine))
+            {
+                return true;
+            }
+            else { return false; }
+        }
+
+        public bool LineFull(string [] line)
+        {
+            bool draw = false;
+            for (int i = 0; i < 3; i++)
+            {
+                if (line[i] != " ")
+                {
+                    draw = true;
+                }else { return false; }
+            }
+            return draw;
+        }
+
+
         public bool IsWinner(string symbol)
         {
             if (LineWin(this.game.FirstLine, symbol))
