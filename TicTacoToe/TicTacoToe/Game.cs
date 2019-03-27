@@ -10,12 +10,14 @@
             Print();
             while (true)
             {
+                
                 Turn("x");
                 if (wr.IsWinner("x"))
                 {
                     Console.WriteLine("'x' won the game!!");
                     break;
                 }
+
                 if (wr.Draw())
                 {
                     Console.WriteLine("It's a draw!");
@@ -36,6 +38,7 @@
             Console.WriteLine(symbol + " turn, choose row and column from 1 to 3");
             while (true)
             {
+                
                 int x = ChooseLine();
                 int y = ChooseColumn();
                 if (PlaceSymbolAt(x, y, symbol))
@@ -50,6 +53,7 @@
             }
         }
 
+        //only possible line to choose is 1, 2 or 3
         public int ChooseLine()
         {
             int x;
@@ -58,6 +62,7 @@
                 Console.Write("Row: ");
                 string row = Console.ReadLine();
 
+                //if entry does not meet requirements prints error
                 if (!Int32.TryParse(row, out x) || x < 1 || x > 3)
                 {
                     Console.WriteLine("Please choose from 1 to 3");
@@ -66,6 +71,7 @@
             }
         }
 
+        //only possible column to choose is 1, 2 or 3
         public int ChooseColumn()
         {
             while (true)
@@ -73,7 +79,7 @@
                 int y;
                 Console.Write("Column: ");
                 string column = Console.ReadLine();
-
+                //if entry does not meet requirements prints error
                 if (!Int32.TryParse(column, out y) || y < 1 || y > 3)
                 {
                     Console.WriteLine("Please choose from 1 to 3");
@@ -82,8 +88,11 @@
             }
         }
 
+        //x is line, y is column
+        //places symbol at requested line and spot if its free and returns true 
         public bool PlaceSymbolAt(int x, int y, string symbol)
         {
+
             if (x == 1 && FirstLine[y - 1] == " ")
             {
                 FirstLine[y - 1] = symbol;
