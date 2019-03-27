@@ -1,28 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TicTacoToe
+﻿namespace TicTacoToe
 {
-    class Program
+    using System;
+
+    internal class Program
     {
-        static void Main(string[] args)
+        
+
+        internal static void Main(string[] args)
         {
 
-            Game game = new Game();
-            WinRules gw = new WinRules(game);
-            // Console.WriteLine(gw.IsWinner("x"));
 
+            Game game = new Game();
+            
             game.StartGame();
-            /*game.Print();
-            game.PlayerMove(1, 2, "x");
-            game.Print();
-            game.PlayerMove(2, 2, "x");
-            game.Print();*/
-           // game.Print();
-            Console.ReadLine();
+            while (true)
+            {
+                Console.Write("Play again? y/n: ");
+                string answer = Console.ReadLine();
+                if (answer.ToLower() == "y")
+                {
+                    game = new Game();
+                    game.StartGame();
+                }
+                else { break; }
+            }
+            
         }
+
+        
     }
 }
