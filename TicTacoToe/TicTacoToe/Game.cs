@@ -4,66 +4,82 @@
 
     internal class Game
     {
-        private string playerOneSymbol;
-
-        private string playerTwoSymbol;
-
         public void StartGame()
         {
             WinRules wr = new WinRules(this);
-            SymbolPicks();
+            Print();
             while (true)
             {
-                PlayerTurn(playerOneSymbol);
-                Print();
-                if (wr.IsWinner(playerOneSymbol))
+                Turn("x");
+                if (wr.IsWinner("x"))
                 {
-                    Console.WriteLine(playerOneSymbol + " is winner!");
+                    Console.WriteLine("'x' won the game!!");
                     break;
-                } else if(wr.Draw())
+                }
+                if (wr.Draw())
                 {
+                    Console.WriteLine("It's a draw!");
                     break;
                 }
 
-
-                PlayerTurn(playerTwoSymbol);
-                Print();
-                if (wr.IsWinner(playerTwoSymbol))
+                Turn("o");
+                if (wr.IsWinner("o"))
                 {
-                    Console.WriteLine(playerTwoSymbol + " is winner!");
+                    Console.WriteLine("'o' won the game!!");
                     break;
                 }
             }
         }
 
-        public void PlayerTurn(string symbol)
+        public void Turn(string symbol)
+        {
+            Console.WriteLine(symbol + " turn, choose row and column from 1 to 3");
+            while (true)
+            {
+                int x = ChooseLine();
+                int y = ChooseColumn();
+                if (PlaceSymbolAt(x, y, symbol))
+                {
+                    Print();
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("You can not place '" + symbol + "' at " + x + ", " + y);
+                }
+            }
+        }
+
+        public int ChooseLine()
         {
             int x;
-            int y;
-            Console.Write(symbol + " turn, choose line and column from 1 to 3: \n");
             while (true)
             {
-                Console.Write("Line: ");
-                string line = Console.ReadLine();
-                if (!Int32.TryParse(line, out x) || x < 0 || x > 3)
+                Console.Write("Row: ");
+                string row = Console.ReadLine();
+
+                if (!Int32.TryParse(row, out x) || x < 1 || x > 3)
                 {
                     Console.WriteLine("Please choose from 1 to 3");
                 }
-                else { break; }
+                else { return x; }
             }
+        }
 
+        public int ChooseColumn()
+        {
             while (true)
             {
+                int y;
                 Console.Write("Column: ");
                 string column = Console.ReadLine();
-                if (!Int32.TryParse(column, out y) || y < 0 || y > 3)
+
+                if (!Int32.TryParse(column, out y) || y < 1 || y > 3)
                 {
                     Console.WriteLine("Please choose from 1 to 3");
                 }
-                else { break; }
+                else { return y; }
             }
-
-            PlaceSymbolAt(x, y, symbol);
         }
 
         public bool PlaceSymbolAt(int x, int y, string symbol)
@@ -82,33 +98,8 @@
             {
                 ThirdLine[y - 1] = symbol;
                 return true;
-            } else { return false; }
-        }
-
-        public void SymbolPicks()
-        {
-            Console.Write("Player one choose 'x' or 'o' as your symbol: ");
-            playerOneSymbol = Console.ReadLine();
-            while (true)
-            {
-                if (playerOneSymbol == "x")
-                {
-                    playerTwoSymbol = "o";
-                    Console.WriteLine("Player two you are left with 'o'");
-                    break;
-                }
-                else if (playerOneSymbol == "o")
-                {
-                    playerTwoSymbol = "x";
-                    Console.WriteLine("Player two you are left with 'x'");
-                    break;
-                }
-                else
-                {
-                    Console.Write("Invalid character, please choose 'x' or 'o': ");
-                    playerOneSymbol = Console.ReadLine();
-                }
             }
+            else { return false; }
         }
 
         public string[] FirstLine { get; set; } = { " ", " ", " " };
