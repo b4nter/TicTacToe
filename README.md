@@ -1,2 +1,2 @@
 # TicTacToe
-TicTacToe game, currently can only be played player vs player
+TicTacToe game, currently can be played player vs player only.
