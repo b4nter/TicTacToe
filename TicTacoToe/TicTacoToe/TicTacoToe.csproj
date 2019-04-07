@@ -44,7 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
-    <Compile Include="WinRules.cs" />
+    <Compile Include="GameLoop.cs" />
+    <Compile Include="InputManager.cs" />
+    <Compile Include="WinCondition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
