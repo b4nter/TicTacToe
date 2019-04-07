@@ -4,129 +4,137 @@
 
     internal class Game
     {
+        private WinCondition _winCondition;
+
+        public Game(WinCondition winCondition)
+        {
+            _winCondition = winCondition;
+            _winCondition.AddGameState(this);
+        }
+
         public void StartGame()
         {
-            WinRules wr = new WinRules(this);
-            Print();
-            while (true)
-            {
-                
-                Turn("x");
-                if (wr.IsWinner("x"))
-                {
-                    Console.WriteLine("'x' won the game!!");
-                    break;
-                }
-
-                if (wr.Draw())
-                {
-                    Console.WriteLine("It's a draw!");
-                    break;
-                }
-
-                Turn("o");
-                if (wr.IsWinner("o"))
-                {
-                    Console.WriteLine("'o' won the game!!");
-                    break;
-                }
-            }
+            PrintBoard();
+            var players = CreatePlayers();
+            Play(players);
         }
 
-        public void Turn(string symbol)
+        private char[] CreatePlayers()
         {
-            Console.WriteLine(symbol + " turn, choose row and column from 1 to 3");
-            while (true)
-            {
-                
-                int x = ChooseLine();
-                int y = ChooseColumn();
-                if (PlaceSymbolAt(x, y, symbol))
-                {
-                    Print();
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("You can not place '" + symbol + "' at " + x + ", " + y);
-                }
-            }
+            const char cross = 'x';
+            const char circle = 'o';
+            char[] players = { cross, circle };
+
+            return players;
         }
 
-        //only possible line to choose is 1, 2 or 3
-        public int ChooseLine()
-        {
-            int x;
-            while (true)
-            {
-                Console.Write("Row: ");
-                string row = Console.ReadLine();
-
-                //if entry does not meet requirements prints error
-                if (!Int32.TryParse(row, out x) || x < 1 || x > 3)
-                {
-                    Console.WriteLine("Please choose from 1 to 3");
-                }
-                else { return x; }
-            }
-        }
-
-        //only possible column to choose is 1, 2 or 3
-        public int ChooseColumn()
+        private void Play(char[] players)
         {
             while (true)
             {
-                int y;
-                Console.Write("Column: ");
-                string column = Console.ReadLine();
-                //if entry does not meet requirements prints error
-                if (!Int32.TryParse(column, out y) || y < 1 || y > 3)
+                foreach (var player in players)
                 {
-                    Console.WriteLine("Please choose from 1 to 3");
+                    TakeTurn(player);
+                    if (_winCondition.IsWinner(player))
+                    {
+                        PrintWinner(player);
+                        break;
+                    }
+
+                    if (_winCondition.IsDraw())
+                    {
+                        PrintDraw();
+                        break;
+                    }
                 }
-                else { return y; }
             }
         }
 
-        //x is line, y is column
-        //places symbol at requested line and spot if its free and returns true 
-        public bool PlaceSymbolAt(int x, int y, string symbol)
-        {
-
-            if (x == 1 && FirstLine[y - 1] == " ")
-            {
-                FirstLine[y - 1] = symbol;
-                return true;
-            }
-            else if (x == 2 && SecondLine[y - 1] == " ")
-            {
-                SecondLine[y - 1] = symbol;
-                return true;
-            }
-            else if (x == 3 && ThirdLine[y - 1] == " ")
-            {
-                ThirdLine[y - 1] = symbol;
-                return true;
-            }
-            else { return false; }
-        }
-
-        public string[] FirstLine { get; set; } = { " ", " ", " " };
-
-        public string[] SecondLine { get; set; } = { " ", " ", " " };
-
-        public string[] ThirdLine { get; set; } = { " ", " ", " " };
-
-        public void Print()
+        private void PrintBoard()
         {
             Console.WriteLine("    1   2   3");
             Console.WriteLine("  |---|---|---|");
-            Console.WriteLine("1 | " + FirstLine[0] + " | " + FirstLine[1] + " | " + FirstLine[2] + " |");
-            Console.WriteLine("  |---|---|---|");
-            Console.WriteLine("2 | " + SecondLine[0] + " | " + SecondLine[1] + " | " + SecondLine[2] + " |");
-            Console.WriteLine("  |---|---|---|");
-            Console.WriteLine("3 | " + ThirdLine[0] + " | " + ThirdLine[1] + " | " + ThirdLine[2] + " |");
+
+            RenderRow(1, FirstRow[0], FirstRow[1], FirstRow[2]);
+            RenderRow(2, SecondRow[0], SecondRow[1], SecondRow[2]);
+            RenderRow(3, ThirdRow[0], ThirdRow[1], ThirdRow[2]);
+        }
+
+        private void RenderRow(int rowNumber, params char[] symbols)
+        {
+            Console.WriteLine($"{rowNumber} | {symbols[0]} | {symbols[1]} | {symbols[2]} |");
             Console.WriteLine("  |---|---|---|");
         }
+
+        public void TakeTurn(char symbol)
+        {
+            Console.WriteLine($"{symbol} turn, choose row and column from 1 to 3");
+
+            var column = ChooseLine(false);
+            var row = ChooseLine(true);
+            if (PlaceSymbolAt(column - 1, row, symbol))
+            {
+                PrintBoard();
+            }
+            else
+            {
+                Console.WriteLine($"You can not place '{symbol}' at {column}, {row}");
+                TakeTurn(symbol);
+            }
+        }
+
+        public int ChooseLine(bool isRow)
+        {
+            var prompt = isRow? "Row": "Column";
+            var isValidChoice = false;
+            while (!isValidChoice)
+            {
+                var input = InputManager.PromptInput($"{prompt}: ");
+
+                isValidChoice = !int.TryParse(input, out var choice) || choice < 1 || choice > 3;
+                if (isValidChoice)
+                {
+                    return choice;
+                }
+                Console.WriteLine("Please choose from 1 to 3");
+            }
+
+            return 0;
+        }
+
+        public bool PlaceSymbolAt(int row, int column, char symbol)
+        {
+            var rows = new char[3][]
+            {
+                FirstRow, SecondRow, ThirdRow
+            };
+            return PlaceSymbol(rows[row], column, symbol);
+        }
+
+        private bool PlaceSymbol(char[] chars, int column, char symbol)
+        {
+            if (chars[column] != ' ') return false;
+            chars[column] = symbol;
+            return true;
+
+        }
+
+        private void PrintWinner(char symbol)
+        {
+            Console.WriteLine($"'{symbol}' won the game!!");
+        }
+
+        private void PrintDraw()
+        {
+            Console.WriteLine("It's a draw!");
+        }
+
+        // TODO: Jagged array
+        public char[] FirstRow { get; set; } = { ' ', ' ', ' ' };
+
+        public char[] SecondRow { get; set; } = { ' ', ' ', ' ' };
+
+        public char[] ThirdRow { get; set; } = { ' ', ' ', ' ' };
+
     }
 }
