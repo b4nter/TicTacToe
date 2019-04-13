@@ -72,7 +72,7 @@
 
             var column = ChooseLine(false);
             var row = ChooseLine(true);
-            if (PlaceSymbolAt(column - 1, row, symbol))
+            if (PlaceSymbolAt(column, row, symbol))
             {
                 PrintBoard();
             }
@@ -85,18 +85,23 @@
 
         public int ChooseLine(bool isRow)
         {
-            var prompt = isRow? "Row": "Column";
+            var prompt = isRow ? "Row" : "Column";
             var isValidChoice = false;
             while (!isValidChoice)
             {
                 var input = InputManager.PromptInput($"{prompt}: ");
 
                 isValidChoice = !int.TryParse(input, out var choice) || choice < 1 || choice > 3;
+                
                 if (isValidChoice)
                 {
-                    return choice;
+                    Console.WriteLine("Please choose from 1 to 3");
+                    ChooseLine(isRow);
                 }
-                Console.WriteLine("Please choose from 1 to 3");
+                else
+                {
+                    isValidChoice = true;
+                }
             }
 
             return 0;
@@ -116,7 +121,6 @@
             if (chars[column] != ' ') return false;
             chars[column] = symbol;
             return true;
-
         }
 
         private void PrintWinner(char symbol)
@@ -135,6 +139,5 @@
         public char[] SecondRow { get; set; } = { ' ', ' ', ' ' };
 
         public char[] ThirdRow { get; set; } = { ' ', ' ', ' ' };
-
     }
 }

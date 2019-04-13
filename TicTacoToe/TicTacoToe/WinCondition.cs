@@ -29,18 +29,18 @@ namespace TicTacoToe
 
         public bool IsDraw()
         {
-            var areAllLinesEmpty = !DoesRowContainCharacters(_firstRow) && !DoesRowContainCharacters(_secondRow) && !DoesRowContainCharacters(_thirdRow);
+            var areAllLinesEmpty = IsRowFull(_firstRow) && IsRowFull(_secondRow) && IsRowFull(_thirdRow);
             return areAllLinesEmpty;
         }
 
-        public bool DoesRowContainCharacters(char[] row)
+        public bool IsRowFull(char[] row)
         {
-            return row.Any(c => c != ' ');
+            return !row.Any(c => c == ' ');
         }
 
         public bool AreMatchingSymbols(char[] list, char symbol)
         {
-            return list.Any(c => c != symbol);
+             return list.All(c => c == symbol);
         }
 
         public bool IsColumnWin(char symbol)
