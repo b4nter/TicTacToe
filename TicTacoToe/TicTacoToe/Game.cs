@@ -50,7 +50,7 @@
             }
         }
 
-        private void PrintBoard()
+        public void PrintBoard()
         {
             Console.WriteLine("    1   2   3");
             Console.WriteLine("  |---|---|---|");
@@ -72,7 +72,8 @@
 
             var column = ChooseLine(false);
             var row = ChooseLine(true);
-            if (PlaceSymbolAt(column, row, symbol))
+
+            if (PlaceSymbolAt(column, row - 1, symbol))
             {
                 PrintBoard();
             }
@@ -83,31 +84,32 @@
             }
         }
 
+        public bool IsValidChoice(int choice)
+        {
+            if(choice < 1 || choice > 3)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public int ChooseLine(bool isRow)
         {
             var prompt = isRow ? "Row" : "Column";
-            var isValidChoice = false;
-            while (!isValidChoice)
+            
+            var input = InputManager.PromptInput($"{prompt}: ");
+            int choice = 0;
+            int.TryParse(input, out choice);
+            if (!IsValidChoice(choice))
             {
-                var input = InputManager.PromptInput($"{prompt}: ");
-
-                isValidChoice = !int.TryParse(input, out var choice) || choice < 1 || choice > 3;
-                
-                if (isValidChoice)
-                {
-                    Console.WriteLine("Please choose from 1 to 3");
-                    ChooseLine(isRow);
-                }
-                else
-                {
-                    isValidChoice = true;
-                }
-            }
-
-            return 0;
+                Console.WriteLine("Please choose from 1 to 3");
+                ChooseLine(isRow);
+            }            
+            return choice;
         }
 
-        public bool PlaceSymbolAt(int row, int column, char symbol)
+        public bool PlaceSymbolAt(int column, int row, char symbol)
         {
             var rows = new char[3][]
             {
