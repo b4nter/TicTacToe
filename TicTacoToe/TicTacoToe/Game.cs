@@ -30,7 +30,8 @@
 
         private void Play(char[] players)
         {
-            while (true)
+            bool gameOver = false;
+            while (!gameOver)
             {
                 foreach (var player in players)
                 {
@@ -38,12 +39,14 @@
                     if (_winCondition.IsWinner(player))
                     {
                         PrintWinner(player);
+                        gameOver = true;
                         break;
                     }
 
                     if (_winCondition.IsDraw())
                     {
                         PrintDraw();
+                        gameOver = true;
                         break;
                     }
                 }
@@ -73,7 +76,7 @@
             var column = ChooseLine(false);
             var row = ChooseLine(true);
 
-            if (PlaceSymbolAt(column, row - 1, symbol))
+            if (PlaceSymbolAt(column - 1, row - 1, symbol))
             {
                 PrintBoard();
             }
@@ -84,29 +87,25 @@
             }
         }
 
-        public bool IsValidChoice(int choice)
-        {
-            if(choice < 1 || choice > 3)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         public int ChooseLine(bool isRow)
         {
             var prompt = isRow ? "Row" : "Column";
-            
-            var input = InputManager.PromptInput($"{prompt}: ");
-            int choice = 0;
-            int.TryParse(input, out choice);
-            if (!IsValidChoice(choice))
+            var isValidChoice = false;
+            while (!isValidChoice)
             {
-                Console.WriteLine("Please choose from 1 to 3");
-                ChooseLine(isRow);
-            }            
-            return choice;
+                var input = InputManager.PromptInput($"{prompt}: ");
+                isValidChoice = int.TryParse(input, out var choice) && choice > 0 && choice < 4;
+
+                if (isValidChoice)
+                {
+                    return choice;
+                }
+                else
+                {
+                    Console.WriteLine("Please choose from 1 to 3");
+                }
+            }
+            return 0;
         }
 
         public bool PlaceSymbolAt(int column, int row, char symbol)
